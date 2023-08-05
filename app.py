@@ -1,5 +1,7 @@
 import streamlit as st
-from connection import TmdbConnection
+# from connection import TmdbConnection
+
+from st_tmdb_connection import TmdbConnection
 
 st.set_page_config(
     page_title="Hello",

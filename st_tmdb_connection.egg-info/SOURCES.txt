@@ -1,6 +1,6 @@
 setup.py
 st_tmdb_connection/__init__.py
-st_tmdb_connection/st_tmdb_connection.py
+st_tmdb_connection/connection.py
 st_tmdb_connection.egg-info/PKG-INFO
 st_tmdb_connection.egg-info/SOURCES.txt
 st_tmdb_connection.egg-info/dependency_links.txt
