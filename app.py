@@ -1,7 +1,7 @@
 import streamlit as st
 # from connection import TmdbConnection
 
-from st_tmdb_connection import TmdbConnection
+from connection import TmdbConnection
 
 st.set_page_config(
     page_title="Hello",
@@ -15,10 +15,11 @@ option = st.selectbox(
     'What do you want to search?',
     ('Movie', 'TV','Top Rated Movies','Top Rated TV Shows'))
     
-
+# To choose between searching of movies or tvs
 if option == 'Movie':
     st.session_state['option'] = option
     moviename=st.text_input('Movie Name',placeholder="Enter Movie Name")
+    
 elif option == 'TV':
     st.session_state['option'] = option
     moviename=st.text_input('TV Show Name',placeholder="Enter TV Show Name")    
@@ -31,12 +32,4 @@ st.data_editor(movies,column_config={
         "genre_names": st.column_config.TextColumn(label="Genres",),
         "vote_average": st.column_config.NumberColumn(label="Rating"),
 },hide_index=True)
-               
-    #            column_config={
-    #     "poster_path": st.column_config.ImageColumn(
-    #          help="Streamlit app preview screenshots"
-    #     )
-    # },
-    # hide_index=True)
-# print(movies)
-# conn.query("movies")
+

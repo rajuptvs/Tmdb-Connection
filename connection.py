@@ -72,3 +72,17 @@ class TmdbConnection(ExperimentalBaseConnection):
                     return df[['poster_path','name','vote_average', 'genre_names','overview','first_air_date', 'original_language']]
         
         return _query(title)
+    
+    def query_popular(self, ttl: int = 5):
+        @st.cache_data(ttl=ttl)
+        def _query_popular():
+            cursor = self.cursor()
+            if st.session_state['popular_option'] == 'Movie':
+                print("Movies")
+                return pd.concat([pd.DataFrame(cursor.movies().popular(page=i)) for i in range(1, 6)])
+            elif st.session_state['popular_option'] == 'TV':
+                print("TVs")
+                return pd.concat([pd.DataFrame(cursor.tvs().popular(page=i)) for i in range(1, 6)])
+                
+        return _query_popular()
+                
