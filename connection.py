@@ -80,11 +80,11 @@ class TmdbConnection(ExperimentalBaseConnection):
             cursor = self.cursor()
             if st.session_state['option'] == 'Movie':
                 df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.movies().popular(page=i)) for i in range(1, 6)]))
-                return df
+                return df[['poster_path','title','vote_average','genre_names', 'overview', 'release_date','original_language']]
             elif st.session_state['option'] == 'TV':
                 
                 df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.tvs().popular(page=i)) for i in range(1, 6)]))
-                return df
+                return df[['poster_path','name','vote_average', 'genre_names','overview','first_air_date', 'original_language']]
                 
         return _query_popular()
 
@@ -94,11 +94,11 @@ class TmdbConnection(ExperimentalBaseConnection):
             cursor = self.cursor()
             if st.session_state['option'] == 'Movie':
                 df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.movies().top_rated(page=i)) for i in range(1, 6)]))
-                return df
+                return df[['poster_path','title','vote_average','genre_names', 'overview', 'release_date','original_language']]
             elif st.session_state['option'] == 'TV':
                 
                 df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.tvs().top_rated(page=i)) for i in range(1, 6)]))
-                return df
+                return df[['poster_path','name','vote_average', 'genre_names','overview','first_air_date', 'original_language']]
                 
         return _query_toprated() 
 
@@ -108,11 +108,11 @@ class TmdbConnection(ExperimentalBaseConnection):
             cursor = self.cursor()
             if st.session_state['option'] == 'Movie':
                 df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.movies().now_playing(page=i)) for i in range(1, 6)]))
-                return df
+                return df[['poster_path','title','vote_average','genre_names', 'overview', 'release_date','original_language']]
             elif st.session_state['option'] == 'TV':
                 
                 df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.tvs().on_the_air(page=i)) for i in range(1, 6)]))
-                return df
+                return df[['poster_path','name','vote_average', 'genre_names','overview','first_air_date', 'original_language']]
                 
         return _query_nowplaying() 
     
@@ -122,17 +122,20 @@ class TmdbConnection(ExperimentalBaseConnection):
             cursor = self.cursor()
             if st.session_state['option'] == 'Movie':
                 if title:
-                    id=cursor.search().movies(title)[0].id
                     df=TmdbConnection.prep(pd.DataFrame(cursor.movie(cursor.search().movies(title)[0].id).recommendations()))
                     # print(df)
-
-                    # st.image(cursor.search().movies(title)[0].id)
-                    return df,id
+                    if df.empty:
+                        st.write('No recommendations found')
+                    else:
+                         return df[['poster_path','title','vote_average','genre_names', 'overview', 'release_date','original_language']]
             elif st.session_state['option'] == 'TV':
                 if title:
-                    id=cursor.search().movies(title)[0].id
-                    df=TmdbConnection.prep(pd.DataFrame(cursor.movie(cursor.search().movies(title)[0].id).recommendations()))
+                    # df=TmdbConnection.prep(pd.DataFrame(cursor.movie(cursor.search().movies(title)[0].id).recommendations()))
+                    df=TmdbConnection.prep(pd.DataFrame(cursor.tv(cursor.search().tv(title)[0].id).recommendations()))
                     # print(df)
-                    return df,id
+                    if df.empty:
+                        st.write('No recommendations found')
+                    else:
+                        return df[['poster_path','name','vote_average', 'genre_names','overview','first_air_date', 'original_language']]
                 
         return _query_recommendations(title)
