@@ -1,7 +1,11 @@
 import streamlit as st
 from connection import TmdbConnection
-st.title('Tmdb Connection Demo')
 
+st.set_page_config(
+    page_title="Hello",
+    page_icon="👋",
+)
+st.title('Tmdb Connection Demo')
 
 conn = st.experimental_connection("tmdb", type=TmdbConnection,key=st.secrets.api.key)
 
