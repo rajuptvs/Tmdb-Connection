@@ -19,7 +19,7 @@ class TmdbConnection(ExperimentalBaseConnection):
     
     
     def prep(movie):
-        df=pd.DataFrame(movie)
+        # df=pd.DataFrame(movie)
     
         def map_genres(genre_ids):
             return [genredf[genredf['id'] == genre_id]['genres'].iloc[0] for genre_id in genre_ids]
@@ -49,11 +49,12 @@ class TmdbConnection(ExperimentalBaseConnection):
         elif st.session_state['option'] == 'TV':
             genredf=pd.DataFrame(tvdata)
 
-
-        df['genre_names'] = df['genre_ids'].apply(map_genres)
-        df['genre_names'] = df['genre_names'].apply(lambda x: process_genre_names(x))
-        df['poster_path'] = df['poster_path'].apply(lambda x: full_url(x))
-        return df
+        if not movie.empty:
+            movie['genre_names'] = movie['genre_ids'].apply(map_genres)
+            movie['genre_names'] = movie['genre_names'].apply(lambda x: process_genre_names(x))
+            movie['poster_path'] = movie['poster_path'].apply(lambda x: full_url(x))
+        # print(movie)
+        return movie
         
 
 
@@ -64,25 +65,71 @@ class TmdbConnection(ExperimentalBaseConnection):
             if st.session_state['option'] == 'Movie':
                 #only process below if title is not empty
                 if title:
-                    df=TmdbConnection.prep(cursor.search().movies(title))
+                    df=TmdbConnection.prep(pd.DataFrame(cursor.search().movies(title)))
                     return df[['poster_path','title','vote_average','genre_names', 'overview', 'release_date','original_language']]
             elif st.session_state['option'] == 'TV':
                 if title:
-                    df=TmdbConnection.prep(cursor.search().tv(title))
+                    df=TmdbConnection.prep(pd.DataFrame(cursor.search().tv(title)))
                     return df[['poster_path','name','vote_average', 'genre_names','overview','first_air_date', 'original_language']]
         
         return _query(title)
     
-    def query_popular(self, ttl: int = 5):
+    def query_popular(self, ttl: int = 1):
         @st.cache_data(ttl=ttl)
         def _query_popular():
             cursor = self.cursor()
-            if st.session_state['popular_option'] == 'Movie':
-                print("Movies")
-                return pd.concat([pd.DataFrame(cursor.movies().popular(page=i)) for i in range(1, 6)])
-            elif st.session_state['popular_option'] == 'TV':
-                print("TVs")
-                return pd.concat([pd.DataFrame(cursor.tvs().popular(page=i)) for i in range(1, 6)])
+            if st.session_state['option'] == 'Movie':
+                df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.movies().popular(page=i)) for i in range(1, 6)]))
+                return df
+            elif st.session_state['option'] == 'TV':
+                
+                df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.tvs().popular(page=i)) for i in range(1, 6)]))
+                return df
                 
         return _query_popular()
+
+    def query_toprated(self, ttl: int = 1):
+        @st.cache_data(ttl=ttl)
+        def _query_toprated():
+            cursor = self.cursor()
+            if st.session_state['option'] == 'Movie':
+                df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.movies().top_rated(page=i)) for i in range(1, 6)]))
+                return df
+            elif st.session_state['option'] == 'TV':
                 
+                df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.tvs().top_rated(page=i)) for i in range(1, 6)]))
+                return df
+                
+        return _query_toprated() 
+
+    def query_nowplaying(self, ttl: int = 1):
+        @st.cache_data(ttl=ttl)
+        def _query_nowplaying():               
+            cursor = self.cursor()
+            if st.session_state['option'] == 'Movie':
+                df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.movies().now_playing(page=i)) for i in range(1, 6)]))
+                return df
+            elif st.session_state['option'] == 'TV':
+                
+                df=TmdbConnection.prep(pd.concat([pd.DataFrame(cursor.tvs().on_the_air(page=i)) for i in range(1, 6)]))
+                return df
+                
+        return _query_nowplaying() 
+    
+    def query_recommendations(self, title:str, ttl: int = 1):
+
+        @st.cache_data(ttl=ttl)
+        def _query_recommendations(title:str):
+            cursor = self.cursor()
+            if st.session_state['option'] == 'Movie':
+                if title:
+                    df=TmdbConnection.prep(pd.DataFrame(cursor.movie(cursor.search().movies(title)[0].id).recommendations()))
+                    # print(df)
+                    return df
+            elif st.session_state['option'] == 'TV':
+                if title:
+                    df=TmdbConnection.prep(pd.DataFrame(cursor.movie(cursor.search().movies(title)[0].id).recommendations()))
+                    # print(df)
+                    return df
+                
+        return _query_recommendations(title)
