@@ -3,7 +3,7 @@ from connection import TmdbConnection
 st.title('Tmdb Connection Demo')
 # key=st.text_input('key',value="eb980dd63dfdf03b72a4c9189ec414b0")
 
-conn = st.experimental_connection("tmdb", type=TmdbConnection,key="eb980dd63dfdf03b72a4c9189ec414b0")
+conn = st.experimental_connection("tmdb", type=TmdbConnection,key=st.secrets.api.key)
 
 option = st.selectbox(
     'What do you want to search?',

@@ -8,7 +8,7 @@ class TmdbConnection(ExperimentalBaseConnection):
     def _connect(self, **kwargs):
         if 'key' in kwargs:
             key = kwargs.pop('key')
-            print(key)
+            # print(key)
         else:
             key = self._secrets['key']
         tmdb = TMDb(key=key)
