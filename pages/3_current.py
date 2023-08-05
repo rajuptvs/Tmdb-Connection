@@ -4,7 +4,7 @@ from connection import TmdbConnection
 # st.set_page_config(page_title="Plotting Demo", page_icon="📈")
 connection = st.experimental_connection("tmdb", type=TmdbConnection,key=st.secrets.api.key)
 
-st.title('Top Rated TV / Movies')
+st.title('Currently Playing TV / Movies')
 option = st.selectbox(
     'What do you want to search?',
     ('Movie', 'TV'))

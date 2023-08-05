@@ -17,7 +17,7 @@ class TmdbConnection(ExperimentalBaseConnection):
     def cursor(self) -> TMDb:
         return self._instance
     
-    
+    # preparing the data with preprocessing
     def prep(movie):
         # df=pd.DataFrame(movie)
     
@@ -29,6 +29,7 @@ class TmdbConnection(ExperimentalBaseConnection):
                 return "N/A"
             return ', '.join(genre_list)
         
+        #Url for poster
         def full_url(poster_path):
             if poster_path:
                 return "https://image.tmdb.org/t/p/w185" + poster_path

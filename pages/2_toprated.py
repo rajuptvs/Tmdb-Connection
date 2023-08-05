@@ -1,10 +1,15 @@
 import streamlit as st
-from connection import TmdbConnection
 
+
+from connection import TmdbConnection
 # st.set_page_config(page_title="Plotting Demo", page_icon="📈")
 connection = st.experimental_connection("tmdb", type=TmdbConnection,key=st.secrets.api.key)
+N = 15
 
 st.title('Top Rated TV / Movies')
+
+
+
 option = st.selectbox(
     'What do you want to search?',
     ('Movie', 'TV'))
