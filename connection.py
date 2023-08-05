@@ -117,19 +117,22 @@ class TmdbConnection(ExperimentalBaseConnection):
         return _query_nowplaying() 
     
     def query_recommendations(self, title:str, ttl: int = 1):
-
         @st.cache_data(ttl=ttl)
         def _query_recommendations(title:str):
             cursor = self.cursor()
             if st.session_state['option'] == 'Movie':
                 if title:
+                    id=cursor.search().movies(title)[0].id
                     df=TmdbConnection.prep(pd.DataFrame(cursor.movie(cursor.search().movies(title)[0].id).recommendations()))
                     # print(df)
-                    return df
+
+                    # st.image(cursor.search().movies(title)[0].id)
+                    return df,id
             elif st.session_state['option'] == 'TV':
                 if title:
+                    id=cursor.search().movies(title)[0].id
                     df=TmdbConnection.prep(pd.DataFrame(cursor.movie(cursor.search().movies(title)[0].id).recommendations()))
                     # print(df)
-                    return df
+                    return df,id
                 
         return _query_recommendations(title)

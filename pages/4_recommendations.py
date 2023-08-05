@@ -12,13 +12,15 @@ if option == 'Movie':
     print('Movie')
     st.session_state['option'] = option
     title=st.text_input('Enter a movie name to get recommendations',key='movie_name',placeholder='Matrix')
-    df=connection.query_recommendations(title)
+    df,id=connection.query_recommendations(title)
 elif option == 'TV':
     print('TV')
     st.session_state['option'] = option
     title=st.text_input('Enter a TV show to get recommendations',key='movie_name',placeholder='Game of Thrones')
-    df=connection.query_recommendations(title)
+    df,id=connection.query_recommendations(title)
 
+if id:
+    st.video(id)
 # st.data_editor(df)
 st.data_editor(df,column_config={
         "poster_path": st.column_config.ImageColumn(width="100px",help="Double click to enlarge",label="Poster"),
