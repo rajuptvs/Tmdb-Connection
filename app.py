@@ -13,7 +13,7 @@ conn = st.experimental_connection("tmdb", type=TmdbConnection,key=st.secrets.api
 
 option = st.selectbox(
     'What do you want to search?',
-    ('Movie', 'TV','Top Rated Movies','Top Rated TV Shows'))
+    ('Movie', 'TV'))
     
 # To choose between searching of movies or tvs
 if option == 'Movie':
